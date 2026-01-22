@@ -1,0 +1,9 @@
+customer_id,timestamp,item
+C1,2026-01-01 10:00,Bread
+C1,2026-01-01 10:05,Milk
+C1,2026-01-01 10:10,Eggs
+C2,2026-01-02 18:00,Diapers
+C2,2026-01-02 18:03,Wipes
+C2,2026-01-02 18:10,Baby Lotion
+C3,2026-01-03 09:00,Soap
+C3,2026-01-03 09:02,Shampoo
