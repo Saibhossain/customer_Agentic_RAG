@@ -1,4 +1,4 @@
-# 🛒 Agentic RAG for Customer Behavior Analysis (Prototype)
+# Agentic RAG for Customer Behavior Analysis (Prototype)
 
 A **lightweight, production-style prototype** demonstrating how a **RAG Agent** can be used for **customer behavior analysis** — specifically, predicting the **probability of the next item purchase** and **explaining it using retrieved historical evidence**.
 
@@ -7,11 +7,11 @@ This project is inspired by **retail scenarios like Walmart**, but implemented u
 - Agentic decision-making
 - Probabilistic sequence modeling
 
-> ⚠️ This is a **prototype / proof-of-concept**, not a full-scale recommender system.
+> This is a **prototype / proof-of-concept**, not a full-scale recommender system.
 
 ---
 
-## 🎯 Project Objective
+##  Project Objective
 
 Given a customer’s recent purchase history:
 1. Predict **what item the customer is likely to buy next**
@@ -20,7 +20,7 @@ Given a customer’s recent purchase history:
 
 ---
 
-## 🧠 Key Idea
+##  Key Idea
 
 Traditional recommendation systems *predict* but rarely *explain*.
 
@@ -80,6 +80,9 @@ Example output:
 
     pip install -r requirements.txt
 
+## Run the application
+
+    python app.py
 
 ### Disclaimer
 
