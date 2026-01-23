@@ -1,0 +1,9 @@
+customer_id,transaction_id,timestamp,item,category,price,discount,quantity,day_of_week,time_of_day,loyalty_level
+C1,T1,2026-01-01 10:00,Bread,Bakery,1.5,0,1,Wednesday,Morning,Silver
+C1,T1,2026-01-01 10:05,Milk,Dairy,2.0,10,1,Wednesday,Morning,Silver
+C1,T1,2026-01-01 10:10,Eggs,Dairy,3.0,0,1,Wednesday,Morning,Silver
+C2,T2,2026-01-02 18:00,Diapers,Baby Care,12.0,15,1,Thursday,Evening,Gold
+C2,T2,2026-01-02 18:03,Wipes,Baby Care,4.5,0,1,Thursday,Evening,Gold
+C2,T2,2026-01-02 18:10,Baby Lotion,Baby Care,6.0,0,1,Thursday,Evening,Gold
+C3,T3,2026-01-03 09:00,Soap,Personal Care,1.2,0,1,Friday,Morning,Bronze
+C3,T3,2026-01-03 09:02,Shampoo,Personal Care,4.0,5,1,Friday,Morning,Bronze
