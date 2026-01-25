@@ -1,3 +1,3 @@
 version 1.0.0:  "prototype"  git commit -m"version 1.0.0"
-version 1.0.0:  "more intelligent fixed all issues
+version 1.0.1:  "more intelligent fixed all issues
                 llm, indexing, "  git commit -m"version 1.0.1"
