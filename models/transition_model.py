@@ -2,19 +2,17 @@ from collections import defaultdict
 
 class TransitionModel:
     def __init__(self):
-        self.transitions = defaultdict(lambda: defaultdict(int))
-        self.probabilities = {}
+        self.counts = defaultdict(lambda: defaultdict(int))
+        self.probs = {}
 
     def train(self, sequences):
         for seq in sequences:
             for i in range(len(seq) - 1):
-                self.transitions[seq[i]][seq[i+1]] += 1
+                self.counts[seq[i]][seq[i + 1]] += 1
 
-        for item, next_items in self.transitions.items():
-            total = sum(next_items.values())
-            self.probabilities[item] = {
-                k: v / total for k, v in next_items.items()
-            }
+        for item, nexts in self.counts.items():
+            total = sum(nexts.values())
+            self.probs[item] = {k: v / total for k, v in nexts.items()}
 
     def predict(self, item):
-        return self.probabilities.get(item, {})
+        return self.probs.get(item, {})

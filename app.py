@@ -1,25 +1,40 @@
 import pandas as pd
-from models.transition_model import TransitionModel
+from embeddings.feature_encoder import encode_basket
 from embeddings.vector_store import VectorStore
+from models.transition_model import TransitionModel
 from agent.rag_agent import CustomerRAGAgent
 
+# Load data
 df = pd.read_csv("data/update_dataset11.csv")
-#print(df)
-df = df.sort_values(["customer_id","timestamp"])
-print(df[["customer_id","item_sequence","item","category","price"]])
 
-sequences = (
-    df.groupby("customer_id")["item"].apply(list).tolist()
-)
+# Build baskets & sequences
+baskets = []
+sequences = []
 
+for _, group in df.groupby("transaction_id"):
+    rows = group.sort_values("item_sequence").to_dict("records")
+    baskets.append(rows)
+    sequences.append([r["item"] for r in rows])
+
+# Train model
 tm = TransitionModel()
 tm.train(sequences)
 
+# Build vector store
 vs = VectorStore()
-vs.add(["-> ".join(seq) for seq in sequences])
 
-agent = CustomerRAGAgent(vs,tm)
+texts = []
+metadata = []
 
-history = ["Bread","Milk"]
-result = agent.run(history)
+for basket in baskets:
+    texts.append(encode_basket(basket))
+    metadata.append(basket)
+
+vs.add(texts, metadata)
+
+# Run agent
+agent = CustomerRAGAgent(vs, tm)
+
+context = texts[0]
+result = agent.run(["Bread", "Milk"], context)
 print(result)

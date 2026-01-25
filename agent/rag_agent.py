@@ -1,26 +1,49 @@
+from llm.ollama_client import OllamaClient
+
 class CustomerRAGAgent:
     def __init__(self, vector_store, transition_model):
-        self.vector_store = vector_store
-        self.model = transition_model
+        self.vs = vector_store
+        self.tm = transition_model
+        self.llm = OllamaClient()
 
-    def decide_retrieval(self, history):
-        return len(history) > 0  # simple decision logic
+    def run(self, history, context_text):
+        try:
+            last_item = history[-1]
+            probs = self.tm.predict(last_item)
+            evidence = self.vs.retrieve(context_text)
 
-    def run(self, history):
-        last_item = history[-1]
+            prompt = f"""
+            You are an explanation module in a retail AI system.
 
-        retrieved = []
-        if self.decide_retrieval(history):
-            retrieved = self.vector_store.retrieve(
-                " -> ".join(history)
-            )
+            IMPORTANT RULES:
+            - You MUST explain only the items listed in "Predicted next-item probabilities".
+            - You MUST NOT introduce new items.
+            - You MUST NOT contradict the probabilities.
+            - You MUST cite the retrieved evidence when explaining.
 
-        probs = self.model.predict(last_item)
+            Customer last purchased: {last_item}
 
-        explanation = {
-            "last_item": last_item,
-            "next_item_probabilities": probs,
-            "retrieved_examples": retrieved
-        }
+            Predicted next-item probabilities (AUTHORITATIVE):
+            {probs}
 
-        return explanation
+            Retrieved historical baskets (EVIDENCE):
+            {evidence}
+
+            TASK:
+            Explain why the predicted next item(s) are likely purchases.
+            """
+
+            explanation = self.llm.generate(prompt)
+
+            return {
+                "last_item": last_item,
+                "probabilities": probs,
+                "evidence": evidence,
+                "explanation": explanation
+            }
+
+        except Exception as e:
+            return {
+                "error": "Agent execution failed",
+                "details": str(e)
+            }
