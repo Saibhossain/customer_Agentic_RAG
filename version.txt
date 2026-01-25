@@ -1,1 +1,1 @@
-version 1.0.0:  "Prototyope"  git commit -m"main" log:3514218b55c288f193bcc7a7116af09c593c6f52
+version 1.0.0:  "Prototyope"  git commit -m"version 1.0.0"
