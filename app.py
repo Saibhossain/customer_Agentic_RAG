@@ -1,40 +1,16 @@
-import pandas as pd
-from embeddings.feature_encoder import encode_basket
+
+from agents.planner_agent import PlannerAgent
+from agents.explanation_agent import ExplanationAgent
 from embeddings.vector_store import VectorStore
 from models.transition_model import TransitionModel
-from agent.rag_agent import CustomerRAGAgent
 
-# Load data
-df = pd.read_csv("data/update_dataset11.csv")
-
-# Build baskets & sequences
-baskets = []
-sequences = []
-
-for _, group in df.groupby("transaction_id"):
-    rows = group.sort_values("item_sequence").to_dict("records")
-    baskets.append(rows)
-    sequences.append([r["item"] for r in rows])
-
-# Train model
-tm = TransitionModel()
-tm.train(sequences)
-
-# Build vector store
+planner = PlannerAgent()
+explainer = ExplanationAgent()
 vs = VectorStore()
 
-texts = []
-metadata = []
+query = "why should we stock more eggs?"
 
-for basket in baskets:
-    texts.append(encode_basket(basket))
-    metadata.append(basket)
+decision = planner.decide(query)
+evidence = vs.retrieve(query)
 
-vs.add(texts, metadata)
-
-# Run agent
-agent = CustomerRAGAgent(vs, tm)
-
-context = texts[0]
-result = agent.run(["Bread", "Milk"], context)
-print(result)
+print(explainer.explain({"Eggs": 0.78}, evidence))
