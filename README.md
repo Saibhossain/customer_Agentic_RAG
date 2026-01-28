@@ -9,10 +9,8 @@ This project combines:
 - **Agentic planning with LangGraph**
 - **Interactive Streamlit dashboard**
 
-It is designed as a **research / exam / demo–ready prototype** with **production-grade clarity**.
-![image ](agent_graph.png)
 ---
-
+![image ](agent_graph.png)
 ##  Key Features
 
 -  Predict what a customer will buy next using a **Markov Chain model**
