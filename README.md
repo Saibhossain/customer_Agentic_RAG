@@ -1,142 +1,213 @@
-# Agentic RAG for Customer Behavior Analysis (Prototype)
+# Customer Agentic RAG – Smart Retail Intelligence
 
-A **lightweight, production-style prototype** demonstrating how a **RAG Agent** can be used for **customer behavior analysis** — specifically, predicting the **probability of the next item purchase** and **explaining it using retrieved historical evidence**.
+A **full Agentic RAG (Retrieval-Augmented Generation) system** for customer behavior analysis and explainable retail intelligence.
 
-This project is inspired by **retail scenarios like Walmart**, but implemented using **modern AI concepts** such as:
-- Retrieval-Augmented Generation (RAG)
-- Agentic decision-making
-- Probabilistic sequence modeling
+This project combines:
+- **Markov-based next-item prediction**
+- **PDF-based RAG using Vector Databases**
+- **LLM-powered explanations (Gemma via Ollama)**
+- **Agentic planning with LangGraph**
+- **Interactive Streamlit dashboard**
 
-> This is a **prototype / proof-of-concept**, not a full-scale recommender system.
-
----
-
-##  Project Objective
-
-Given a customer’s recent purchase history:
-1. Predict **what item the customer is likely to buy next**
-2. Compute **probabilities** of next-item choices
-3. **Explain** the prediction by retrieving similar historical purchase sequences using a **RAG Agent**
+It is designed as a **research / exam / demo–ready prototype** with **production-grade clarity**.
 
 ---
 
-##  Key Idea
+##  Key Features
 
-Traditional recommendation systems *predict* but rarely *explain*.
+-  Predict what a customer will buy next using a **Markov Chain model**
+-  Explain predictions using a **local LLM (Gemma 3:1B via Ollama)**
+-  Upload PDFs (sales reports, policies) and query them via **RAG + Vector DB**
+-  Intelligent **Agentic RAG Planner** using **LangGraph**
+-  Beautiful, user-friendly **Streamlit dashboard**
+-  Modular, extensible architecture (agents, tools, planner)
 
-This project introduces a **RAG Agent** that:
-- Decides **when retrieval is needed**
-- Retrieves similar historical purchase sequences
-- Grounds predictions in **real transaction evidence**
+---
 
-Example output:
-```json
-{
-  "last_item": "Milk",
-  "next_item_probabilities": {
-    "Eggs": 1.0
-  },
-  "retrieved_examples": [
-    "Bread-> Milk-> Eggs",
-    "Diapers-> Wipes-> Baby Lotion",
-    "Soap-> Shampoo"
-  ]
-}
+##  System Architecture (High-Level)
+
+```
+User (Dashboard)
+   ↓
+LangGraph Planner Agent
+   ↓ decides tools
+┌──────────────────────────────┐
+│  Prediction Tool (Markov)    │
+│  Document RAG Tool (VectorDB)│
+└──────────────────────────────┘
+   ↓
+Generator Agent (LLM)
+   ↓
+Final Answer + Explanation
 ```
 
-## System Architecture (Conceptual)
-    User Purchase History
-            ↓
-       RAG Agent
-            ├── Decide: Should I retrieve?
-            ├── Retrieve similar purchase sequences (Vector DB)
-            ├── Predict next-item probabilities
-            └── Generate grounded explanation
+---
 
-## Project Structure
+## 📂 Project Structure
 
-    customer_Agentic_RAG/
-    ├── data/
-    │   └── transactions.csv          # Sample transaction data
-    ├── embeddings/
-    │   └── vector_store.py            # FAISS-based vector retrieval
-    ├── models/
-    │   └── transition_model.py        # Probabilistic transition model
-    ├── agent/
-    │   └── rag_agent.py               # Agentic RAG logic
-    ├── app.py                         # Main application
-    ├── README.md  
-    └── requirements.txt
+```
+customer_agentic_rag/
+│
+├── dashboard.py                  # Streamlit UI
+├── langgraph_app.py              # LangGraph agent definition
+├── requirements.txt
+│
+├── agents/
+│   ├── state.py                  # Shared agent state
+│   ├── planner_node.py           # Planner agent (tool selection)
+│   ├── prediction_node.py        # Markov prediction node
+│   ├── document_rag_node.py      # PDF RAG node
+│   ├── generator_node.py         # Final answer generator
+│
+├── models/
+│   └── markov_model.py           # Markov next-item prediction
+│
+├── embeddings/
+│   └── vector_store.py           # FAISS-based vector DB
+│
+├── ingestion/
+│   └── ingest_documents.py       # PDF ingestion & chunking
+│
+├── llm/
+│   └── ollama_client.py          # Ollama LLM wrapper
+│
+├── data/
+│   └── update_dataset11.csv      # Customer transaction dataset
+│
+└── assets/
+    └── agent_graph.png           # LangGraph visualization
+```
+
+---
+
+##  Dataset Description
+
+**File:** `data/update_dataset11.csv`
+
+Schema:
+```
+customer_id, transaction_id, timestamp, item_sequence,
+item, category, quantity, price, discount,
+day_of_week, time_of_day, loyalty_level
+```
+
+- Supports **basket-level purchases** (multiple items per transaction)
+- Preserves **order within baskets** and **across time**
+- Suitable for **sequential modeling (Markov)** and **behavior analysis**
+
+---
+
+## Prediction Model
+
+### Model Used: First-Order Markov Chain
+
+**Definition:**
+
+```
+P(next_item | current_item)
+```
+
+- Learns transition probabilities between consecutive items
+- Simple, interpretable, and widely used as a retail baseline
+- Works well for prototypes, demos, and explainable systems
+
+---
+
+## RAG for PDF Documents
+
+### What is stored in Vector DB?
+
+- NOT raw CSV rows
+- NOT entire PDFs
+
+**Chunked textual summaries** extracted from PDFs
+
+### RAG Flow
+
+1. Upload PDF from dashboard
+2. Extract text → chunk → embed
+3. Store embeddings in FAISS vector DB
+4. Retrieve relevant chunks for a query
+5. LLM generates a grounded explanation
+
+### Planner Decisions
+
+| User Query | Planner Action |
+|----------|---------------|
+| Next product prediction | PREDICTION |
+| Explain PDF | DOCUMENT |
+| Why prediction + evidence | PREDICTION + DOCUMENT |
+
+---
+
+## 🖥️ Streamlit Dashboard
+
+### Tabs
+
+1. **Customer Data** – purchase history & profile
+2. **Prediction** – next-item probabilities + charts
+3. **Agent Explanation** – natural language answers
+4. **Agent Graph** – LangGraph visualization
+
+Designed for **non-technical users** (management, examiners, demos).
+
+---
+
+##  Installation & Setup
+
+###  Create virtual environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+```
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Install & run Ollama
+
+```bash
+ollama pull gemma3:1b
+```
+
+### Run the dashboard
+
+```bash
+streamlit run dashboard.py
+```
+
+---
+
+## Example Query
+
+> "What will this customer buy next and why?"
+
+**Output:**
+- Prediction from Markov model
+- Explanation from LLM
+- Optional PDF-based evidence (if uploaded)
+
+---
 
 
 
-    customer_agentic_rag/
-    │
-    ├── dashboard.py                  # Streamlit control plane
-    ├── requirements.txt
-    │
-    ├── controller/
-    │   ├── __init__.py
-    │   └── system_controller.py
-    │
-    ├── embeddings/
-    │   ├── __init__.py
-    │   └── vector_store.py
-    │
-    ├── ingestion/
-    │   ├── __init__.py
-    │   ├── ingest_transactions.py
-    │   └── ingest_documents.py
-    │
-    ├── models/
-    │   ├── __init__.py
-    │   └── transition_model.py
-    │
-    ├── agents/
-    │   ├── __init__.py
-    │   ├── transaction_agent.py
-    │   ├── document_summary_agent.py
-    │   ├── explanation_agent.py
-    │   ├── log_agent.py
-    │   └── error_agent.py
-    │
-    ├── llm/
-    │   ├── __init__.py
-    │   └── ollama_client.py
-    │
-    ├── logs/
-    │   ├── agent_logs.jsonl
-    │   └── system_errors.jsonl
-    │
-    ├── storage/
-    │   ├── tx.index
-    │   ├── tx.meta.pkl
-    │   ├── doc.index
-    │   └── doc.meta.pkl
-    │
-    └── data/
-        └── update_dataset11.csv
+## Conclusion
+
+This project demonstrates **modern AI system design**:
+- Prediction + RAG + Agents
+- Explainability by design
+- Clean separation of concerns
 
 
-## Dummy dataset used 
+---
 
-    customer_id,timestamp,item
-    C1,2026-01-01 10:00,Bread
-    C1,2026-01-01 10:05,Milk
-    C1,2026-01-01 10:10,Eggs
+ Built with care for clarity, learning, and real-world relevance.
 
-## Install dependencies
 
-    pip install -r requirements.txt
-
-## Run the application
-
-    python app.py
-
-### Disclaimer
-
-This project is a conceptual prototype meant for educational and experimental purposes.
-It is not optimized for large-scale production deployment.
 
 ### Author
 
