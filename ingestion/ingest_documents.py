@@ -1,19 +1,15 @@
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import CharacterTextSplitter
-from embeddings.vector_store import VectorStore
+import fitz  # PyMuPDF
 
-def ingest_pdfs(folder):
-    vs = VectorStore()
-    splitter = CharacterTextSplitter(chunk_size=512, chunk_overlap=100)
+def ingest_pdf(pdf_path, vector_store):
+    doc = fitz.open(pdf_path)
+    chunks = []
 
-    for pdf in folder:
-        docs = PyPDFLoader(pdf).load()
-        chunks = splitter.split_documents(docs)
+    for page_num, page in enumerate(doc):
+        text = page.get_text().strip()
+        if text:
+            chunks.append(
+                f"[Page {page_num + 1}] {text}"
+            )
 
-        texts = [c.page_content for c in chunks]
-        meta = [{
-            "type": "financial_doc",
-            "source": pdf
-        }] * len(texts)
-
-        vs.add(texts, meta)
+    vector_store.add(chunks)
+    return len(chunks)

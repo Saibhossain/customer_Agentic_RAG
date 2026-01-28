@@ -1,17 +1,30 @@
 
-from llm.ollama_client import OllamaClient
-
 class ExplanationAgent:
-    def explain(self, probs, evidence):
+    def __init__(self, llm):
+        self.llm = llm
+
+    def explain_markov_prediction(self, customer_id, last_item, predictions):
+        if not predictions:
+            return "There is insufficient historical data to predict the next item."
+        prob_text = "\n".join(
+            [f"- {item}: {prob:.2f}" for item, prob in predictions.items()]
+        )
+
         prompt = f"""
-                    RULES:
-                    - Do not change predictions
-                    - Explain only given items in short 
-                    - with politely 
+                    You are a retail analytics assistant.
+                    Customer ID: {customer_id}
+                    Last purchased item: {last_item}
                     
-                    Predictions: {probs}
-                    Evidence: {evidence}
+                    Predicted next-item probabilities (from a Markov model):
+                    {prob_text}
                     
-                    Explain decision clearly.
+                    Explain in simple terms:
+                    - why these items are predicted
+                    - what the probabilities mean
+                    - how a business user should interpret this result
+                    
+                    Keep the explanation short, clear, and non-technical.
                     """
-        return OllamaClient().generate(prompt)
+
+        return self.llm.generate(prompt)
+

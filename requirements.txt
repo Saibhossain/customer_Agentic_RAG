@@ -2,7 +2,7 @@ sentence-transformers==5.2.0
 faiss-cpu==1.13.2
 pandas==3.0.0
 numpy==2.4.1
-streamlit==
+streamlit==1.53.1
 langchain==1.2.7
 langchain-community==1.0.0a1
 langchain-text-splitters==1.1.0
