@@ -10,7 +10,7 @@ This project combines:
 - **Interactive Streamlit dashboard**
 
 It is designed as a **research / exam / demo–ready prototype** with **production-grade clarity**.
-
+![image ](agent_graph.png)
 ---
 
 ##  Key Features
