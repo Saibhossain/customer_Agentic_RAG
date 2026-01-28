@@ -6,7 +6,7 @@ from llm.ollama_client import OllamaClient
 import tempfile
 from ingestion.ingest_documents import ingest_pdf
 from embeddings.vector_store import VectorStore
-from agents.document_summary_agent import DocumentSummaryAgent
+from agents.document_rag_nod import DocumentSummaryAgent
 from llm.ollama_client import OllamaClient
 
 st.markdown("---")

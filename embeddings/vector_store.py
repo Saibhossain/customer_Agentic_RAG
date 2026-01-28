@@ -13,10 +13,10 @@ class VectorStore:
         self.index.add(embeddings)
         self.texts.extend(texts)
 
-    def search(self, query, k=5):
-        q_emb = self.model.encode([query])
-        _, idx = self.index.search(q_emb, k)
-        return [self.texts[i] for i in idx[0]]
+    # def search(self, query, k=5):
+    #     q_emb = self.model.encode([query])
+    #     _, idx = self.index.search(q_emb, k)
+    #     return [self.texts[i] for i in idx[0]]
 
     def save(self, index_path, meta_path):
         faiss.write_index(self.index, index_path)
@@ -27,3 +27,18 @@ class VectorStore:
         self.index = faiss.read_index(index_path)
         with open(meta_path, "rb") as f:
             self.texts = pickle.load(f)
+
+    def search(self, query, k=5):
+        if len(self.texts) == 0:
+            return []
+
+        q_emb = self.model.encode([query])
+        distances, indices = self.index.search(q_emb, k)
+
+        results = []
+        for i in indices[0]:
+            if i < len(self.texts):
+                results.append(self.texts[i])
+
+        return results
+
