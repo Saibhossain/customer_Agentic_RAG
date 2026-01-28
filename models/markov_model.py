@@ -38,8 +38,8 @@ class MarkovNextItemModel:
 
 
 # for testing markov model
-df = pd.read_csv("/Users/mdsaibhossain/code/python/customer_Agentic_RAG/data/update_dataset11.csv")
-
-model = MarkovNextItemModel()
-model.fit(df)
-print(model.predict_next("wipes"))
+# df = pd.read_csv("/Users/mdsaibhossain/code/python/customer_Agentic_RAG/data/update_dataset11.csv")
+#
+# model = MarkovNextItemModel()
+# model.fit(df)
+# print(model.predict_next("wipes"))
