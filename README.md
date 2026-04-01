@@ -221,7 +221,7 @@ Designing safe, scalable, and human-centered intelligent systems for real-world 
   <a href="mailto:saibhossain5@gmail.com">
     <img src="https://img.shields.io/badge/Email-saibhossain5%40gmail.com-red?style=flat&logo=gmail">
   </a>
-  <img src="https://img.shields.io/badge/Phone-%2B8801769918015-green?style=flat&logo=whatsapp">
+  
   <a href="https://saibhossain.github.io/">
     <img src="https://img.shields.io/badge/Portfolio-Visit-blue?style=flat&logo=google-chrome">
   </a>
